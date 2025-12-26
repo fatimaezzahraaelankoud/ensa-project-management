@@ -1,0 +1,1 @@
+// ProjectDetails.vue placeholder

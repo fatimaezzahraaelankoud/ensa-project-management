@@ -1,0 +1,1 @@
+// AuthView.vue placeholder

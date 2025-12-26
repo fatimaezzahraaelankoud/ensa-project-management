@@ -1,0 +1,1 @@
+// AppNavbar.vue placeholder
