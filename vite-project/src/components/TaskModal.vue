@@ -3,19 +3,19 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">{{ editMode ? "Modifier Projet" : "Nouveau Projet" }}</h5>
-          <button class="btn-close" @click="closeModal"></button>
+          <h5 class="modal-title">{{ editMode ? "Modifier Tâche" : "Nouvelle Tâche" }}</h5>
+          <button type="button" class="btn-close" @click="closeModal"></button>
         </div>
 
         <div class="modal-body">
-          <input v-model="form.name" class="form-control mb-2" placeholder="Nom du projet"/>
+          <input v-model="form.title" type="text" class="form-control mb-2" placeholder="Titre de la tâche" />
           <textarea v-model="form.description" class="form-control mb-2" placeholder="Description"></textarea>
-          <input type="color" v-model="form.color" class="form-control form-control-color" />
+          <input v-model="form.deadline" type="date" class="form-control" />
         </div>
 
         <div class="modal-footer">
           <button class="btn btn-secondary" @click="closeModal">Annuler</button>
-          <button class="btn btn-primary" @click="saveProject">
+          <button class="btn btn-primary" @click="saveTask">
             {{ editMode ? "Modifier" : "Créer" }}
           </button>
         </div>
@@ -33,54 +33,65 @@ const projectStore = useProjectStore();
 const modalRef = ref(null);
 
 const editMode = ref(false);
-const projectToEdit = ref(null);
+const editTaskData = ref(null);
 
 const form = ref({
-  name: "",
+  title: "",
   description: "",
-  color: "#3498db"
+  deadline: ""
 });
 
 let bsModal = null;
 
 function openModal() {
   editMode.value = false;
-  projectToEdit.value = null;
-  form.value = { name: "", description: "", color: "#3498db" };
+  form.value = { title: "", description: "", deadline: "" };
   bsModal.show();
 }
 
-function editProject(project) {
+function editTask(task) {
   editMode.value = true;
-  projectToEdit.value = project;
-  form.value = { ...project };
+  editTaskData.value = task;
+  form.value = { ...task };
   bsModal.show();
-}
-
-async function saveProject() {
-  if (!form.value.name.trim()) return alert("Nom obligatoire !");
-
-  if (editMode.value && projectToEdit.value) {
-    await projectStore.updateProject(projectToEdit.value.id, form.value);
-  } else {
-    await projectStore.createProject(form.value);
-  }
-
-  closeModal();
 }
 
 function closeModal() {
   bsModal.hide();
 }
 
+async function saveTask() {
+  if (!form.value.title) return alert("Titre requis !");
+
+  if (editMode.value) {
+    if (!editTaskData.value?.id) {
+      console.error("saveTask: taskId manquant !");
+      return;
+    }
+    
+    await projectStore.updateTask(
+      projectStore.currentProject.id,
+      editTaskData.value.id,
+      form.value
+    );
+  } else {
+    await projectStore.createTask(projectStore.currentProject.id, form.value);
+  }
+
+  closeModal();
+}
+
+
 onMounted(() => {
   bsModal = new bootstrap.Modal(modalRef.value);
 });
 
-// 🔥 expose les méthodes pour ref
-defineExpose({ openModal, editProject });
-</script>
 
+defineExpose({
+  openModal,
+  editTask
+});
+</script>
 
 
 
