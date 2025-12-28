@@ -1,1 +1,20 @@
 # ensa-project-management
+t
+
+Projet de gestion de projets et tâches développé avec **Vue 3**, **Pinia**, **Firebase** et **Bootstrap 5**.
+
+## Fonctionnalités
+
+- Authentification Firebase (Email + Google)
+- Gestion de projets (CRUD)
+- Gestion de tâches par projet (CRUD + statut TODO/DOING/DONE)
+- Modal pour créer / modifier projets et tâches
+- Interface responsive avec Bootstrap 5
+
+## Installation
+
+```bash
+git clone https://github.com/ton-utilisateur/ensa-project-management.git
+cd ensa-project-management
+npm install
+npm run dev
