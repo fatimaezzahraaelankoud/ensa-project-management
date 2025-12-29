@@ -14,7 +14,7 @@ Projet de gestion de projets et tâches développé avec **Vue 3**, **Pinia**, *
 ## Installation
 
 ```bash
-git clone https://github.com/ton-utilisateur/ensa-project-management.git
+git clone https://github.com/fatimaezzahraaelankoud/ensa-project-management.git
 cd ensa-project-management
 npm install
 npm run dev
