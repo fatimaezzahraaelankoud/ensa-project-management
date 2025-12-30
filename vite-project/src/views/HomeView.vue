@@ -4,7 +4,7 @@
     <p class="mb-4">Gérez vos projets et tâches efficacement, en temps réel.</p>
 
     <div>
-      <router-link v-if="user" class="btn btn-primary me-2" to="/auth">Se connecter / S'inscrire</router-link>
+      <router-link  class="btn btn-primary me-2" to="/auth">Se connecter / S'inscrire</router-link>
   
     </div>
   </div>

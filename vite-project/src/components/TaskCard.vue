@@ -3,6 +3,20 @@
     <h6 class="fw-bold">{{ task.title }}</h6>
     <p class="text-muted small">{{ task.description }}</p>
 
+    <!-- date visible selon statut -->
+    <p v-if="task.status === 'todo' && task.dateStart" class="small text-primary">
+       À faire avant : <b>{{ formatDate(task.dateStart) }}</b>
+    </p>
+
+    <p v-if="task.status === 'doing' && task.dateStart" class="small text-warning">
+       Début : <b>{{ formatDate(task.dateStart) }}</b>
+    </p>
+
+    <p v-if="task.status === 'done' && task.dateEnd" class="small text-success">
+      ✔ Terminé le : <b>{{ formatDate(task.dateEnd) }}</b>
+    </p>
+
+    <!-- Select status -->
     <select class="form-select form-select-sm my-2"
       v-model="localStatus"
       @change="changeStatus">
@@ -11,6 +25,7 @@
       <option value="done">Terminé</option>
     </select>
 
+    <!-- Buttons -->
     <div class="d-flex justify-content-between">
       <button class="btn btn-warning btn-sm" @click="$emit('edit', task)">Modifier</button>
       <button class="btn btn-danger btn-sm" @click="$emit('delete', task)">Supprimer</button>
@@ -32,16 +47,21 @@ const localStatus = computed({
   set: (v) => emits("move", props.task, v)
 });
 
+// Mise à jour statut
 function changeStatus() {
   emits("move", props.task, localStatus.value);
+}
+
+// Formatage lisible ex: 27/12/2025
+function formatDate(date) {
+  return new Date(date).toLocaleDateString("fr-FR");
 }
 </script>
 
 <style scoped>
 .card {
-  transition: 0.2s;
+  transition: .2s;
 }
-
 .card:hover {
   transform: scale(1.02);
 }
