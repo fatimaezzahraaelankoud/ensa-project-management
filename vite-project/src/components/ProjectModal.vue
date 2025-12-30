@@ -77,9 +77,9 @@ onMounted(() => {
   bsModal = new bootstrap.Modal(modalRef.value);
 });
 
-// 🔥 expose les méthodes pour ref
 defineExpose({ openModal, editProject });
 </script>
+
 
 
 

@@ -10,14 +10,14 @@ import {
 
 export const useAuthStore = defineStore("authStore", {
   state: () => ({
-    user: null,      // Utilisateur connecté
-    loading: true    // Pour gérer le spinner global si besoin
+    user: null,
+    loading: true
   }),
 
   actions: {
-    // 🔥 Initialisation : écoute Firebase pour récupérer user connecté
+    /** 🔥 Garder utilisateur connecté après refresh */
     initAuth() {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         onAuthStateChanged(auth, (u) => {
           this.user = u;
           this.loading = false;
@@ -26,58 +26,35 @@ export const useAuthStore = defineStore("authStore", {
       });
     },
 
-    // Inscription email/password
+    /** Inscription */
     async register(email, password) {
-      try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        this.user = auth.currentUser;
-      } catch (error) {
-        console.error("Erreur inscription:", error);
-        throw error;
-      }
+      const res = await createUserWithEmailAndPassword(auth, email, password);
+      this.user = res.user;
     },
 
-    // Connexion email/password
+    /** Connexion */
     async login(email, password) {
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        this.user = auth.currentUser;
-      } catch (error) {
-        console.error("Erreur login:", error);
-        throw error;
-      }
+      const res = await signInWithEmailAndPassword(auth, email, password);
+      this.user = res.user;
     },
 
-    // Connexion Google
+    /** Google */
     async loginGoogle() {
-      try {
-        await signInWithPopup(auth, googleProvider);
-        this.user = auth.currentUser;
-      } catch (error) {
-        console.error("Erreur login Google:", error);
-        throw error;
-      }
+      const res = await signInWithPopup(auth, googleProvider);
+      this.user = res.user;
     },
 
-    // Déconnexion
+    /** Déconnexion */
     async logout() {
-      try {
-        await signOut(auth);
-        this.user = null;
-      } catch (error) {
-        console.error("Erreur logout:", error);
-        throw error;
-      }
+      await signOut(auth);
+      this.user = null;
     }
   },
 
-
+  /** 🧠 Stockage persistant */
   persist: {
-    paths: ["user"]  // seul user sera gardé
+    key: "auth_pinia",
+    storage: localStorage,      // important pour éviter perte session
+    paths: ["user"]             // ce qu'on garde après refresh
   }
 });
-
-
-
-
-
