@@ -1,9 +1,11 @@
 <template>
-  <div class="card shadow-sm p-3 mb-3 border-0" :style="{ borderLeft: `6px solid ${task.color || '#007bff'}` }">
+  <div 
+    class="task-card"
+    :style="{ borderLeft:`6px solid ${colorByStatus[task.status]}` }"
+  >
     <h6 class="fw-bold">{{ task.title }}</h6>
-    <p class="text-muted small">{{ task.description }}</p>
+    <p class="text-muted small mb-1">{{ task.description }}</p>
 
-    <!-- date visible selon statut -->
     <p v-if="task.status === 'todo' && task.dateStart" class="small text-primary">
        À faire avant : <b>{{ formatDate(task.dateStart) }}</b>
     </p>
@@ -13,20 +15,19 @@
     </p>
 
     <p v-if="task.status === 'done' && task.dateEnd" class="small text-success">
-      ✔ Terminé le : <b>{{ formatDate(task.dateEnd) }}</b>
+       Terminé le : <b>{{ formatDate(task.dateEnd) }}</b>
     </p>
 
-    <!-- Select status -->
     <select class="form-select form-select-sm my-2"
       v-model="localStatus"
-      @change="changeStatus">
+      @change="changeStatus"
+    >
       <option value="todo">À faire</option>
       <option value="doing">En cours</option>
       <option value="done">Terminé</option>
     </select>
 
-    <!-- Buttons -->
-    <div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-between mt-2">
       <button class="btn btn-warning btn-sm" @click="$emit('edit', task)">Modifier</button>
       <button class="btn btn-danger btn-sm" @click="$emit('delete', task)">Supprimer</button>
     </div>
@@ -42,34 +43,47 @@ const props = defineProps({
 
 const emits = defineEmits(["move", "delete", "edit"]);
 
+const colorByStatus = {
+  todo: "#0d6efd",
+  doing: "#ffc107",
+  done: "#198754"
+};
+
 const localStatus = computed({
   get: () => props.task.status,
   set: (v) => emits("move", props.task, v)
 });
 
-// Mise à jour statut
-function changeStatus() {
+const changeStatus = () => {
   emits("move", props.task, localStatus.value);
-}
+};
 
-// Formatage lisible ex: 27/12/2025
 function formatDate(date) {
   return new Date(date).toLocaleDateString("fr-FR");
 }
 </script>
 
 <style scoped>
-.card {
-  transition: .2s;
+.task-card {
+  border-radius: 10px;
+  background: #fff;
+  padding: 12px;
+  margin-bottom: 10px;
+  cursor: grab;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
-.card:hover {
-  transform: scale(1.02);
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.task-card select {
+  font-size: 13px;
+  margin-top: 5px;
+}
+.task-card button {
+  font-size: 12px;
+  padding: 4px 8px;
 }
 </style>
-
-
-
-
-
-
 

@@ -1,6 +1,10 @@
 <template>
-  <div class="modal fade" tabindex="-1" ref="modalRef">
-    <div class="modal-dialog">
+  <div
+    class="modal fade"
+    tabindex="-1"
+    ref="modalRef"
+  >
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">{{ editMode ? "Modifier Tâche" : "Nouvelle Tâche" }}</h5>
@@ -8,9 +12,28 @@
         </div>
 
         <div class="modal-body">
-          <input v-model="form.title" type="text" class="form-control mb-2" placeholder="Titre de la tâche" />
-          <textarea v-model="form.description" class="form-control mb-2" placeholder="Description"></textarea>
-          <input v-model="form.deadline" type="date" class="form-control" />
+          <div class="mb-2">
+            <input
+              v-model="form.title"
+              type="text"
+              class="form-control"
+              placeholder="Titre de la tâche"
+            />
+          </div>
+
+          <div class="mb-2">
+            <textarea
+              v-model="form.description"
+              class="form-control"
+              placeholder="Description"
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label">Date limite</label>
+            <input v-model="form.deadline" type="date" class="form-control" />
+          </div>
         </div>
 
         <div class="modal-footer">
@@ -25,7 +48,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 import { useProjectStore } from "../stores/projectStore";
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
 
@@ -61,38 +84,41 @@ function closeModal() {
 }
 
 async function saveTask() {
-  if (!form.value.title) return alert("Titre requis !");
+  if (!form.value.title.trim()) return alert("Le titre est requis !");
+
+  const payload = { ...form.value };
 
   if (editMode.value) {
-    if (!editTaskData.value?.id) {
-      console.error("saveTask: taskId manquant !");
-      return;
-    }
-    
-    await projectStore.updateTask(
-      projectStore.currentProject.id,
-      editTaskData.value.id,
-      form.value
-    );
+    await projectStore.updateTask(projectStore.currentProject.id, editTaskData.value.id, payload);
   } else {
-    await projectStore.createTask(projectStore.currentProject.id, form.value);
+    await projectStore.createTask(projectStore.currentProject.id, payload);
   }
 
   closeModal();
 }
 
-
 onMounted(() => {
   bsModal = new bootstrap.Modal(modalRef.value);
+
+  modalRef.value.addEventListener("shown.bs.modal", () => {
+    nextTick(() => {
+      const firstInput = modalRef.value.querySelector("input, textarea");
+      firstInput?.focus();
+    });
+  });
 });
 
-
-defineExpose({
-  openModal,
-  editTask
-});
+defineExpose({ openModal, editTask });
 </script>
 
-
-
-
+<style scoped>
+.modal-content {
+  border-radius: 12px;
+}
+.modal-header {
+  border-bottom: 1px solid #dee2e6;
+}
+.modal-footer {
+  border-top: 1px solid #dee2e6;
+}
+</style>

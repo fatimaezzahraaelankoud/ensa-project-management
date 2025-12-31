@@ -10,7 +10,6 @@
 </script>
 
 <style scoped>
-/* Optionnel : centrer le spinner dans une div pleine hauteur */
 </style>
 
 

@@ -19,7 +19,7 @@ const router = createRouter({
 });
 
 /* -------------------------------
-   🔐 Protection Global des Routes
+   Protection Global des Routes
 -------------------------------- */
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
