@@ -1,5 +1,4 @@
 # ensa-project-management
-t
 
 Projet de gestion de projets et tâches développé avec **Vue 3**, **Pinia**, **Firebase** et **Bootstrap 5**.
 
