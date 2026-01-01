@@ -1,6 +1,7 @@
 # ensa-project-management
 
 Projet de gestion de projets et tâches développé avec **Vue 3**, **Pinia**, **Firebase** et **Bootstrap 5**.
+le lien : https://kanbanapp-f2d01.web.app
 
 ## Fonctionnalités
 
